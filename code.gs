@@ -1,6 +1,6 @@
 // Google Apps Script (Code.gs)
 
-var SPREADSHEET_ID = '1cWB2BNHvKXm9jIjTOFxpDREMSvHj5JCZ6r-PI4a6GeU';
+var SPREADSHEET_ID = '';
 var SHEET_NAME = 'Data';
 
 /**
