@@ -438,7 +438,7 @@ function getSubmissionStatus(dateString) {
  * Retrieves the Data sheet
  */
 function getSheet() {
-  return SpreadsheetApp.openById('1cWB2BNHvKXm9jIjTOFxpDREMSvHj5JCZ6r-PI4a6GeU').getSheetByName('Data');
+  return SpreadsheetApp.openById('').getSheetByName('Data');
 }
 
 /**
