@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+      const today = new Date().toISOString().split('T')[0];
+      window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('reportDate').value = today;
+       // loadStatus();
+      });
+
+      /*function loadStatus() {
+        const date = document.getElementById('reportDate').value;
+        google.script.run.withSuccessHandler(updateStatus).getSubmissionStatus(date);
+      }
+      // Add form submission handler
+        document.getElementById('yourFormId').addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent default form submission
+        submitFormData(); // Handle data submission manually
+      });*/
+
+      function updateStatus(status) {
+        const sections = [
+        { btnId: 'opdBtn', key: 'opdTimestamp' },
+        { btnId: 'endoBtn', key: 'endoscopyTimestamp' },
+        { btnId: 'bloodBankBtn', key: 'bloodBankTimestamp' },
+        { btnId: 'hematologyBtn', key: 'hematologyTimestamp' },
+        { btnId: 'bloodDrawingCenterBtn', key: 'bloodDrawingCenterTimestamp' },
+        { btnId: 'infectiousDiseasesBtn', key: 'infectiousDiseasesTimestamp' },
+        { btnId: 'painManagementBtn', key: 'painManagementTimestamp' },
+        { btnId: 'chemoTherapyBtn', key: 'chemoTherapyTimestamp' },
+        { btnId: 'breastFeedingBtn', key: 'breastFeedingTimestamp' },
+        { btnId: 'maternalCensusBtn', key: 'maternalCensusTimestamp' },
+        { btnId: 'dialysisBtn', key: 'dialysisTimestamp' },
+        { btnId: 'aeMidnightSummaryBtn', key: 'aeMidnightTimestamp' },
+        { btnId: 'theaterAbBtn', key: 'theaterAbTimestamp' },
+        { btnId: 'theaterCdBtn', key: 'theaterCdTimestamp' },
+        { btnId: 'theaterEfBtn', key: 'theaterEfTimestamp' },
+        { btnId: 'theaterGhBtn', key: 'theaterGhTimestamp' },
+        { btnId: 'theaterMBtn', key: 'theaterMTimestamp' },
+        { btnId: 'theaterEyeBtn', key: 'theaterEyeTimestamp' }
+      ];
+
+        sections.forEach(({ btnId, key }) => {
+          const btn = document.getElementById(btnId);
+          if (btn) {
+            btn.classList.toggle('btn-success', !!status[key]);
+            btn.classList.toggle('btn-outline-secondary', !status[key]);
+          }
+        });
+      }
+
+    function showForm(formId) {
+    const date = document.getElementById('reportDate').value;
+    document.querySelectorAll('.form-section').forEach(f => f.classList.add('d-none'));
+    document.getElementById(formId).classList.remove('d-none');
+
+    google.script.run.withSuccessHandler(data => {
+        if (formId === 'opdForm') {
+            document.getElementById('opdVisit').value = data.numberOfOPDVisit || '';
+            document.getElementById('nebulizationOpd').value = data.numberOfNebulizationOpd || '';
+            document.getElementById('injections').value = data.numberOfInjections || '';
+            document.getElementById('dressing').value = data.numberOfDressing || '';
+            document.getElementById('minorSurgeries').value = data.numberOfMinorSurgeries || '';
+            document.getElementById('opdUmandawa').value = data.numberOfOPDUmandawa || '';
+            document.getElementById('bloodDrawing').value = data.numberOfBloodDrawing || '';
+            document.getElementById('catheterization').value = data.numberOfCatheterization || '';
+        } else if (formId === 'endoscopyForm') {
+            document.getElementById('date').value = data.date || '';
+            document.getElementById('totalEndoscopy').value = data.totalEndoscopies || '';
+        } else if (formId === 'bloodBankForm') {
+            document.getElementById('bloodIssue').value = data.bloodIssue || '';
+            document.getElementById('componentIssuing').value = data.componentIssuing || '';
+            document.getElementById('dtRequested').value = data.dtRequested || '';
+            document.getElementById('crossMatching').value = data.crossMatching || '';
+            document.getElementById('issuedOtherHospitals').value = data.issuedOtherHospitals || '';
+            document.getElementById('componentOtherHospitals').value = data.componentOtherHospitals || '';
+            document.getElementById('receivedOtherHospitals').value = data.receivedOtherHospitals || '';
+            document.getElementById('componentReceivedOtherHospitals').value = data.componentReceivedOtherHospitals || '';
+            document.getElementById('componentRequest').value = data.componentRequest || '';
+            document.getElementById('mobileCollection').value = data.mobileCollection || '';
+            document.getElementById('inHouseCollection').value = data.inHouseCollection || '';
+            document.getElementById('pltConcentrationIssued').value = data.pltConcentrationIssued || '';
+            document.getElementById('totalStock').value = data.totalStock || '';
+        } else if (formId === 'hematologyForm') {
+            document.getElementById('admissions').value = data.admissions || '';
+            document.getElementById('clinicPts').value = data.clinicPts || '';
+            document.getElementById('phlebotomy').value = data.phlebotomy || '';
+            document.getElementById('platelet').value = data.platelet || '';
+            document.getElementById('sameDayDischarges').value = data.sameDayDischarges || '';
+            document.getElementById('discharges').value = data.discharges || '';
+            document.getElementById('referrals').value = data.referrals || '';
+            document.getElementById('boneMarrow').value = data.boneMarrow || '';
+            document.getElementById('scInjection').value = data.scInjection || '';
+        } else if (formId === 'bloodDrawingCenterForm') {
+            document.getElementById('room38').value = data.roomNo38 || '';
+            document.getElementById('room23').value = data.roomNo23 || '';
+            document.getElementById('room04').value = data.roomNo04 || '';
+            document.getElementById('hematology').value = data.hematology || '';
+            document.getElementById('totalNumbers').value = data.totalNumbers || '';
+        } else if (formId === 'infectiousDiseasesForm') {
+            document.getElementById('dengue').value = data.dengue || '';
+            document.getElementById('leptospirosis').value = data.leptospirosis || '';
+            document.getElementById('h1n1').value = data.h1n1 || '';
+            document.getElementById('influenzaB').value = data.influenzaB || '';
+            document.getElementById('covid19').value = data.covid19 || '';
+            document.getElementById('tetanus').value = data.tetanus || '';
+            document.getElementById('chickenpox').value = data.chickenpox || '';
+            document.getElementById('totalInfections').value = data.totalInfections || '';
+        } else if (formId === 'painManagementForm') {
+            document.getElementById('postOpPainAssessment').value = data.postOperativePainAssessment || '';
+            document.getElementById('epiduralMonitoring').value = data.epiduralMonitoring || '';
+            document.getElementById('clinicFollowUp').value = data.clinicFollowUp || '';
+            document.getElementById('maternalBackMassage').value = data.maternalBackMassage || '';
+            document.getElementById('maternalHealthEducation').value = data.maternalHealthEducation || '';
+            document.getElementById('nonPharmaTherapy').value = data.nonPharmaTherapy || '';
+            document.getElementById('totalPts').value = data.totalPts || '';
+        } else if (formId === 'chemoTherapyForm') {
+            document.getElementById('chemoTherapy').value = data.chemoTherapy || '';
+            document.getElementById('zoledronicAcid').value = data.zoledronicAcid || '';
+            document.getElementById('filgrastimTreatment').value = data.filgrastimTreatment || '';
+            document.getElementById('postponedPts').value = data.postponedPts || '';
+            document.getElementById('total').value = data.total || '';
+        } else if (formId === 'breastFeedingForm') {
+            document.getElementById('outOfHospitalReferralsBf').value = data.outOfHospitalReferralsBf || '';
+            document.getElementById('inwardReferralsBf').value = data.inwardReferralsBf || '';
+            document.getElementById('antenatalMothersBf').value = data.antenatalMothersBf || '';
+            document.getElementById('postnatalMothers').value = data.postnatalMothersBf || '';
+            document.getElementById('postAndAntenatalMothersBf').value = data.postAndAntenatalMothersBf || '';
+            document.getElementById('dischargeReferralsBf').value = data.dischargeReferralsBf || '';
+            document.getElementById('opdReferralsBf').value = data.opdReferralsBf || '';
+            document.getElementById('totalBf').value = data.totalBf || '';
+        } else if (formId === 'maternalCensusForm') {
+            document.getElementById('nvds').value = data.nvds || '';
+            document.getElementById('forcepsDelivery').value = data.forcepsDelivery || '';
+            document.getElementById('vacuumDelivery').value = data.vacuumDelivery || '';
+            document.getElementById('lscs').value = data.lscs || '';
+            document.getElementById('totalDeliveries').value = data.totalDeliveries || '';
+            document.getElementById('twinDelivery').value = data.twinDelivery || '';
+            document.getElementById('tripletDelivery').value = data.tripletDelivery || '';
+            document.getElementById('iud').value = data.iud || '';
+            document.getElementById('stillBirth').value = data.stillBirth || '';
+            document.getElementById('neonatalDeath').value = data.neonatalDeath || '';
+            document.getElementById('maternalDeath').value = data.maternalDeath || '';
+        } else if (formId === 'dialysisUnitForm') {
+            document.getElementById('directDialysis').value = data.directDialysis || '';
+            document.getElementById('inWardPatient').value = data.inWardPatient || '';
+            document.getElementById('totalDialysis').value = data.totalDialysis || '';
+            document.getElementById('renalBiopsy').value = data.renalBiopsy || '';
+            document.getElementById('capdInsert').value = data.capdInsert || '';
+            document.getElementById('permanentHDCatheterInsert').value = data.permanentHDCatheterInsert || '';
+            document.getElementById('tempHdCatheterInsert').value = data.tempHdCatheterInsert || '';
+            document.getElementById('otherDialysis').value = data.otherDialysis || '';
+        } else if (formId === 'aEForm') {
+            document.getElementById('admissionsAe').value = data.admissionsAe || '';
+            document.getElementById('hospitalAdmissions').value = data.hospitalAdmissions || '';
+            document.getElementById('totalDailyIn').value = data.totalDailyIn || '';
+            document.getElementById('transfersToOtherWards').value = data.transfersToOtherWards || '';
+            document.getElementById('transfersToOtherHospitals').value = data.transfersToOtherHospitals || '';
+            document.getElementById('dischargesAe').value = data.dischargesAe || '';
+            document.getElementById('sameDayDischargesAe').value = data.sameDayDischargesAe || '';
+            document.getElementById('missings').value = data.missings || '';
+            document.getElementById('lamas').value = data.lamas || '';
+            document.getElementById('numberOfDeaths').value = data.numberOfDeaths || '';
+            document.getElementById('onAdmissionDeaths').value = data.onAdmissionDeaths || '';
+            document.getElementById('totalDailyOut').value = data.totalDailyOut || '';
+            document.getElementById('previousDayMidnightTotal').value = data.previousDayMidnightTotal || '';
+            document.getElementById('todayMidnightTotal').value = data.todayMidnightTotal || '';
+            document.getElementById('arv').value = data.arv || '';
+            document.getElementById('ars').value = data.ars || '';
+        } else if (formId === 'theaterAbDataForm') {
+            document.getElementById('theaterAb').value = data.theaterAb || '';
+            document.getElementById('date').value = data.date || '';
+            document.getElementById('majorAb').value = data.majorAb || '';
+            document.getElementById('minorAb').value = data.minorAb || '';
+            document.getElementById('totalAb').value = data.totalAb || '';
+            document.getElementById('gaAb').value = data.gaAb || '';
+            document.getElementById('laAb').value = data.laAb || '';
+            document.getElementById('spinalAb').value = data.spinalAb || '';
+            document.getElementById('epiduralAb').value = data.epiduralAb || '';
+            document.getElementById('topicalAb').value = data.topicalAb || '';
+            document.getElementById('otherAb').value = data.otherAb || '';
+            document.getElementById('totalNetAb').value = data.totalNetAb || '';
+        }else if (formId === 'theaterCdDataForm') {
+            document.getElementById('theaterCd').value = data.theaterCd || '';
+            document.getElementById('date').value = data.date || '';
+            document.getElementById('majorCd').value = data.majorCd || '';
+            document.getElementById('minorCd').value = data.minorCd || '';
+            document.getElementById('totalCd').value = data.totalCd || '';
+            document.getElementById('gaCd').value = data.gaCd || '';
+            document.getElementById('laCd').value = data.laCd || '';
+            document.getElementById('spinalCd').value = data.spinalCd || '';
+            document.getElementById('epiduralCd').value = data.epiduralCd || '';
+            document.getElementById('topicalCd').value = data.topicalCd || '';
+            document.getElementById('otherCd').value = data.otherCd || '';
+            document.getElementById('totalNetCd').value = data.totalNetCd || '';
+        }else if (formId === 'theaterEfDataForm') {
+            document.getElementById('theaterEf').value = data.theaterEf || '';
+            document.getElementById('date').value = data.date || '';
+            document.getElementById('majorEf').value = data.majorEf || '';
+            document.getElementById('minorEf').value = data.minorEf || '';
+            document.getElementById('totalEf').value = data.totalEf || '';
+            document.getElementById('gaEf').value = data.gaEf || '';
+            document.getElementById('laEf').value = data.laEf || '';
+            document.getElementById('spinalEf').value = data.spinalEf || '';
+            document.getElementById('epiduralEf').value = data.epiduralEf || '';
+            document.getElementById('topicalEf').value = data.topicalEf || '';
+            document.getElementById('otherEf').value = data.otherEf || '';
+            document.getElementById('totalNetEf').value = data.totalNetEf || '';
+        }else if (formId === 'theaterGhDataForm') {
+            document.getElementById('theaterGh').value = data.theaterGh || '';
+            document.getElementById('date').value = data.date || '';
+            document.getElementById('majorGh').value = data.majorGh || '';
+            document.getElementById('minorGh').value = data.minorGh || '';
+            document.getElementById('totalGh').value = data.totalGh || '';
+            document.getElementById('gaGh').value = data.gaGh || '';
+            document.getElementById('laGh').value = data.laGh || '';
+            document.getElementById('spinalGh').value = data.spinalGh || '';
+            document.getElementById('epiduralGh').value = data.epiduralGh || '';
+            document.getElementById('topicalGh').value = data.topicalGh || '';
+            document.getElementById('otherGh').value = data.otherGh || '';
+            document.getElementById('totalNetGh').value = data.totalNetGh || '';
+        }else if (formId === 'theaterMDataForm') {
+            document.getElementById('theaterM').value = data.theaterM || '';
+            document.getElementById('date').value = data.date || '';
+            document.getElementById('majorM').value = data.majorM || '';
+            document.getElementById('minorM').value = data.minorM || '';
+            document.getElementById('totalM').value = data.totalM || '';
+            document.getElementById('gaM').value = data.gaM || '';
+            document.getElementById('laM').value = data.laM || '';
+            document.getElementById('spinalM').value = data.spinalM || '';
+            document.getElementById('epiduralM').value = data.epiduralM || '';
+            document.getElementById('topicalM').value = data.topicalM || '';
+            document.getElementById('otherM').value = data.otherM || '';
+            document.getElementById('totalNetM').value = data.totalNetM || '';
+        }else if (formId === 'theaterEyeDataForm') {
+            document.getElementById('theaterI').value = data.theaterI || '';
+            document.getElementById('date').value = data.date || '';
+            document.getElementById('majorI').value = data.majorI || '';
+            document.getElementById('minorI').value = data.minorI || '';
+            document.getElementById('totalI').value = data.totalI || '';
+            document.getElementById('gaI').value = data.gaI || '';
+            document.getElementById('laI').value = data.laI || '';
+            document.getElementById('spinalI').value = data.spinalI || '';
+            document.getElementById('epiduralI').value = data.epiduralI || '';
+            document.getElementById('topicalI').value = data.topical || '';
+            document.getElementById('otherI').value = data.otherI || '';
+            document.getElementById('totalNetI').value = data.totalNetI || '';
+        }
+    }).getFormData(formId.replace('Form', ''), date);
+}
+
+      function submitOPD() {
+        const formData = {
+          timestamp: new Date().toISOString(),
+          date: document.getElementById('reportDate').value,
+          numberOfOPDVisit: +document.getElementById('opdVisit').value,
+          numberOfNebulizationOpd: +document.getElementById('nebulizationOpd').value,
+          numberOfInjections: +document.getElementById('injections').value,
+          numberOfDressing: +document.getElementById('dressing').value,
+          numberOfMinorSurgeries: +document.getElementById('minorSurgeries').value,
+          numberOfOPDUmandawa: +document.getElementById('opdUmandawa').value,
+          numberOfBloodDrawing: +document.getElementById('bloodDrawing').value,
+          numberOfCatheterization: +document.getElementById('catheterization').value
+        };
+        google.script.run.withSuccessHandler(() => {
+          alert('OPD submitted');
+          loadStatus();
+        }).submitOPD(formData);
+        
+      }
+
+      function submitEndoscopy() {
+        const formData = {
+          timestamp: new Date().toISOString(),
+          date: document.getElementById('reportDate').value,
+          totalEndoscopies: +document.getElementById('totalEndoscopy').value
+        };
+        google.script.run.withSuccessHandler(() => {
+          alert('Endoscopy submitted');
+          loadStatus();
+        }).submitEndoscopy(formData);
+      }
+
+      function submitBloodBank() {
+    const formData = {
+        timestamp: new Date().toISOString(),
+        date: document.getElementById('reportDate').value,
+        bloodIssue: +document.getElementById('bloodIssue').value,
+        componentIssuing: +document.getElementById('componentIssuing').value,
+        dtRequested: +document.getElementById('dtRequested').value,
+        crossMatching: +document.getElementById('crossMatching').value,
+        issuedOtherHospitals: +document.getElementById('issuedOtherHospitals').value,
+        componentOtherHospitals: +document.getElementById('componentOtherHospitals').value,
+        receivedOtherHospitals: +document.getElementById('receivedOtherHospitals').value,
+        componentReceivedOtherHospitals: +document.getElementById('componentReceivedOtherHospitals').value,
+        componentRequest: +document.getElementById('componentRequest').value,
+        mobileCollection: +document.getElementById('mobileCollection').value,
+        inHouseCollection: +document.getElementById('inHouseCollection').value,
+        pltConcentrationIssued: +document.getElementById('pltConcentrationIssued').value,
+        totalStock: +document.getElementById('totalStock').value
+    };
+    google.script.run.withSuccessHandler(() => {
+        alert('Blood Bank submitted');
+        loadStatus();
+    }).submitBloodBank(formData);
+}
+
+function submitHematology() {
+    const formData = {
+        timestamp: new Date().toISOString(),
+        date: document.getElementById('reportDate').value,
+        admissions: +document.getElementById('admissions').value,
+        clinicPts: +document.getElementById('clinicPts').value,
+        phlebotomy: +document.getElementById('phlebotomy').value,
+        platelet: +document.getElementById('platelet').value,
+        sameDayDischarges: +document.getElementById('sameDayDischarges').value,
+        discharges: +document.getElementById('discharges').value,
+        referrals: +document.getElementById('referrals').value,
+        boneMarrow: +document.getElementById('boneMarrow').value,
+        scInjection: +document.getElementById('scInjection').value
+    };
+    google.script.run.withSuccessHandler(() => {
+        alert('Hematology submitted');
+        loadStatus();
+    }).submitHematology(formData);
+}
+
+      function submitBloodDrawingCenter() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    room38: +document.getElementById('room38').value,
+    room23: +document.getElementById('room23').value,
+    room04: +document.getElementById('room04').value,
+    hematology: +document.getElementById('hematology').value,
+    totalNumbers: +document.getElementById('totalNumbers').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Blood Drawing Center submitted');
+    loadStatus();
+  }).submitBloodDrawingCenter(formData);
+}
+function submitInfectiousDiseases() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    dengue: +document.getElementById('dengue').value,
+    leptospirosis: +document.getElementById('leptospirosis').value,
+    h1n1: +document.getElementById('h1n1').value,
+    influenzaB: +document.getElementById('influenzaB').value,
+    covid19: +document.getElementById('covid19').value,
+    tetanus: +document.getElementById('tetanus').value,
+    chickenpox: +document.getElementById('chickenpox').value,
+    totalInfections: +document.getElementById('totalInfections').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Infectious Diseases submitted');
+    loadStatus();
+  }).submitInfectiousDiseases(formData);
+}
+function submitPainManagement() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    postOpPainAssessment: +document.getElementById('postOpPainAssessment').value,
+    epiduralMonitoring: +document.getElementById('epiduralMonitoring').value,
+    clinicFollowUp: +document.getElementById('clinicFollowUp').value,
+    maternalBackMassage: +document.getElementById('maternalBackMassage').value,
+    maternalHealthEducation: +document.getElementById('maternalHealthEducation').value,
+    nonPharmaTherapy: +document.getElementById('nonPharmaTherapy').value,
+    totalPts: +document.getElementById('totalPts').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Pain Management submitted');
+    loadStatus();
+  }).submitPainManagement(formData);
+}
+
+function submitChemoTherapy() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    chemoTherapy: +document.getElementById('chemoTherapy').value,
+    zoledronicAcid: +document.getElementById('zoledronicAcid').value,
+    filgrastimTreatment: +document.getElementById('filgrastimTreatment').value,
+    postponedPts: +document.getElementById('postponedPts').value,
+    total: +document.getElementById('total').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Chemo Therapy submitted');
+    loadStatus();
+  }).submitChemoTherapy(formData);
+}
+function submitBreastFeeding() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    outOfHospitalReferralsBf: +document.getElementById('outOfHospitalReferralsBf').value,
+    inwardReferralsBf: +document.getElementById('inwardReferralsBf').value,
+    antenatalMothersBf: +document.getElementById('antenatalMothersBf').value,
+    postnatalMothersBf: +document.getElementById('postnatalMothersBf').value,
+    postAndAntenatalMothersBf: +document.getElementById('postAndAntenatalMothersBf').value,
+    dischargeReferralsBf: +document.getElementById('dischargeReferralsBf').value,
+    opdReferralsBf: +document.getElementById('opdReferralsBf').value,
+    totalBf: +document.getElementById('totalBf').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Breast Feeding Day Centre submitted');
+    loadStatus();
+  }).submitBreastFeeding(formData);
+}
+function submitMaternalCensus() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    nvds: +document.getElementById('nvds').value,
+    forcepsDelivery: +document.getElementById('forcepsDelivery').value,
+    vacuumDelivery: +document.getElementById('vacuumDelivery').value,
+    lscs: +document.getElementById('lscs').value,
+    totalDeliveries: +document.getElementById('totalDeliveries').value,
+    twinDelivery: +document.getElementById('twinDelivery').value,
+    tripletDelivery: +document.getElementById('tripletDelivery').value,
+    iud: +document.getElementById('iud').value,
+    stillBirth: +document.getElementById('stillBirth').value,
+    neonatalDeath: +document.getElementById('neonatalDeath').value,
+    maternalDeath: +document.getElementById('maternalDeath').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Maternal Census submitted');
+    loadStatus();
+  }).submitMaternalCensus(formData);
+}
+function submitDialysisForm() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    directDialysis: +document.getElementById('directDialysis').value,
+    inWardPatient: +document.getElementById('inWardPatient').value,
+    totalDialysis: +document.getElementById('totalDialysis').value,
+    renalBiopsy: +document.getElementById('renalBiopsy').value,
+    capdInsert: +document.getElementById('capdInsert').value,
+    permanentHDCatheterInsert: +document.getElementById('permanentHDCatheterInsert').value,
+    tempHdCatheterInsert: +document.getElementById('tempHdCatheterInsert').value,
+    otherDialysis: +document.getElementById('otherDialysis').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Dialysis Unit submitted');
+    loadStatus();
+  }).submitDialysisData(formData);
+}
+function submitMidnightSummary() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    admissionsAe: +document.getElementById('admissionsAe').value,
+    hospitalAdmissions: +document.getElementById('hospitalAdmissions').value,
+    totalDailyIn: +document.getElementById('totalDailyIn').value,
+    transfersToOtherWards: +document.getElementById('transfersToOtherWards').value,
+    transfersToOtherHospitals: +document.getElementById('transfersToOtherHospitals').value,
+    dischargesAe: +document.getElementById('dischargesAe').value,
+    sameDayDischargesAe: +document.getElementById('sameDayDischargesAe').value,
+    missings: +document.getElementById('missings').value,
+    lamas: +document.getElementById('lamas').value,
+    numberOfDeaths: +document.getElementById('numberOfDeaths').value,
+    onAdmissionDeaths: +document.getElementById('onAdmissionDeaths').value,
+    totalDailyOut: +document.getElementById('totalDailyOut').value,
+    previousDayMidnightTotal: +document.getElementById('previousDayMidnightTotal').value,
+    todayMidnightTotal: +document.getElementById('todayMidnightTotal').value,
+    arv: +document.getElementById('arv').value,
+    ars: +document.getElementById('ars').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Midnight Summary submitted');
+    loadStatus();
+  }).submitMidnightSummary(formData);
+}
+function submitTheaterAbData() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    //theaterAb: document.getElementById('theaterAb').value,
+    majorAb: +document.getElementById('majorAb').value,
+    minorAb: +document.getElementById('minorAb').value,
+    totalAb: +document.getElementById('totalAb').value,
+    gaAb: +document.getElementById('gaAb').value,
+    laAb: +document.getElementById('laAb').value,
+    spinalAb: +document.getElementById('spinalAb').value,
+    epiduralAb: +document.getElementById('epiduralAb').value,
+    topicalAb: +document.getElementById('topicalAb').value,
+    otherAb: +document.getElementById('otherAb').value,
+    totalNetAb: +document.getElementById('totalNetAb').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Theater AB Data submitted');
+    loadStatus();
+  }).submitTheaterAbData(formData);
+}
+function submitTheaterCdData() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    //theaterCd: document.getElementById('theaterCd').value,
+    majorCd: +document.getElementById('majorCd').value,
+    minorCd: +document.getElementById('minorCd').value,
+    totalCd: +document.getElementById('totalCd').value,
+    gaCd: +document.getElementById('gaCd').value,
+    laCd: +document.getElementById('laCd').value,
+    spinalCd: +document.getElementById('spinalCd').value,
+    epiduralCd: +document.getElementById('epiduralCd').value,
+    topicalCd: +document.getElementById('topicalCd').value,
+    otherCd: +document.getElementById('otherCd').value,
+    totalNetCd: +document.getElementById('totalNetCd').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Theater CD Data submitted');
+    loadStatus();
+  }).submitTheaterCdData(formData);
+}
+function submitTheaterEfData() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+   // theaterEf: document.getElementById('theaterEf').value,
+    majorEf: +document.getElementById('majorEf').value,
+    minorEf: +document.getElementById('minorEf').value,
+    totalEf: +document.getElementById('totalEf').value,
+    gaEf: +document.getElementById('gaEf').value,
+    laEf: +document.getElementById('laEf').value,
+    spinalEf: +document.getElementById('spinalEf').value,
+    epiduralEf: +document.getElementById('epiduralEf').value,
+    topicalEf: +document.getElementById('topicalEf').value,
+    otherEf: +document.getElementById('otherEf').value,
+    totalNetEf: +document.getElementById('totalNetEf').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Theater EF Data submitted');
+    loadStatus();
+  }).submitTheaterEfData(formData);
+}
+function submitTheaterGhData() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    //theaterGh: document.getElementById('theaterGh').value,
+    majorGh: +document.getElementById('majorGh').value,
+    minorGh: +document.getElementById('minorGh').value,
+    totalGh: +document.getElementById('totalGh').value,
+    gaGh: +document.getElementById('gaGh').value,
+    laGh: +document.getElementById('laGh').value,
+    spinalGh: +document.getElementById('spinalGh').value,
+    epiduralGh: +document.getElementById('epiduralGh').value,
+    topicalGh: +document.getElementById('topicalGh').value,
+    otherGh: +document.getElementById('otherGh').value,
+    totalNetGh: +document.getElementById('totalNetGh').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Theater GH Data submitted');
+    loadStatus();
+  }).submitTheaterGhData(formData);
+}
+function submitTheaterMData() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    //theaterM: document.getElementById('theaterM').value,
+    majorM: +document.getElementById('majorM').value,
+    minorM: +document.getElementById('minorM').value,
+    totalM: +document.getElementById('totalM').value,
+    gaM: +document.getElementById('gaM').value,
+    laM: +document.getElementById('laM').value,
+    spinalM: +document.getElementById('spinalM').value,
+    epiduralM: +document.getElementById('epiduralM').value,
+    topicalM: +document.getElementById('topicalM').value,
+    otherM: +document.getElementById('otherM').value,
+    totalNetM: +document.getElementById('totalNetM').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Theater M Data submitted');
+    loadStatus();
+  }).submitTheaterMData(formData);
+}
+function submitTheaterEyeData() {
+  const formData = {
+    timestamp: new Date().toISOString(),
+    date: document.getElementById('reportDate').value,
+    //theaterI: document.getElementById('theaterI').value,
+    majorI: +document.getElementById('majorI').value,
+    minorI: +document.getElementById('minorI').value,
+    totalI: +document.getElementById('totalI').value,
+    gaI: +document.getElementById('gaI').value,
+    laI: +document.getElementById('laI').value,
+    spinalI: +document.getElementById('spinalI').value,
+    epiduralI: +document.getElementById('epiduralI').value,
+    topicalI: +document.getElementById('topicalI').value,
+    otherI: +document.getElementById('otherI').value,
+    totalNetI: +document.getElementById('totalNetI').value
+  };
+  google.script.run.withSuccessHandler(() => {
+    alert('Theater Eye Data submitted');
+    loadStatus();
+  }).submitTheaterEyeData(formData);
+}
+</script>
+</head>
+  <body class="container py-4">
+    <h2>Hospital Day Report Dashboard</h2>
+    <div class="mb-3">
+      <label for="reportDate" class="form-label">Select Date</label>
+      <input type="date" id="reportDate" class="form-control" onchange="loadStatus()">
+    </div>
+
+    <div class="mb-4">
+  <button id="opdBtn" class="btn btn-outline-secondary me-2" onclick="showForm('opdForm')">OPD</button>
+  <button id="endoBtn" class="btn btn-outline-secondary me-2" onclick="showForm('endoscopyForm')">Endoscopy</button>
+  <button id="bloodBankBtn" class="btn btn-outline-secondary me-2" onclick="showForm('bloodBankForm')">Blood Bank</button>
+  <button id="hematologyBtn" class="btn btn-outline-secondary me-2" onclick="showForm('hematologyForm')">Hematology</button>
+  <button id="bloodDrawingCenterBtn" class="btn btn-outline-secondary me-2" onclick="showForm('bloodDrawingCenterForm')">Blood Drawing Center</button>
+  <button id="infectiousDiseasesBtn" class="btn btn-outline-secondary me-2" onclick="showForm('infectiousDiseasesForm')">Infectious Diseases</button>
+  <button id="painManagementBtn" class="btn btn-outline-secondary me-2" onclick="showForm('painManagementForm')">Pain Management</button>
+  <button id="chemoTherapyBtn" class="btn btn-outline-secondary me-2" onclick="showForm('chemoTherapyForm')">Chemo Therapy</button>
+  <button id="breastFeedingBtn" class="btn btn-outline-secondary me-2" onclick="showForm('breastFeedingForm')">Breastfeeding Center</button>
+  <button id="maternalCensusBtn" class="btn btn-outline-secondary me-2" onclick="showForm('maternalCensusForm')">Maternal Census</button>
+  <button id="dialysisBtn" class="btn btn-outline-secondary me-2" onclick="showForm('dialysisForm')">Dialysis Unit</button>
+  <button id="aeMidnightSummaryBtn" class="btn btn-outline-secondary me-2" onclick="showForm('aeMidnightForm')">A&E Midnight</button>
+  <button id="theaterAbBtn" class="btn btn-outline-secondary me-2" onclick="showForm('theaterAbForm')">Theater AB</button>
+  <button id="theaterCdBtn" class="btn btn-outline-secondary" onclick="showForm('theaterCdForm')">Theater CD</button>
+  <button id="theaterEfBtn" class="btn btn-outline-secondary" onclick="showForm('theaterEfForm')">Theater EF</button>
+  <button id="theaterGhBtn" class="btn btn-outline-secondary" onclick="showForm('theaterGhForm')">Theater GH</button>
+  <button id="theaterMBtn" class="btn btn-outline-secondary" onclick="showForm('theaterMForm')">Theater M</button>
+  <button id="theaterEyeBtn" class="btn btn-outline-secondary" onclick="showForm('theaterEyeForm')">Theater Eye</button>
+</div>
+
+
+    <!-- OPD Form -->
+    <div id="opdForm" class="form-section d-none">
+      <h4>OPD Report</h4>
+      <div class="row g-3">
+        <div class="col-md-4"><input id="opdVisit" placeholder="Number of OPD visit" class="form-control" type="number"></div>
+        <div class="col-md-4"><input id="nebulizationOpd" placeholder="Number of Nebulization" class="form-control" type="number"></div>
+        <div class="col-md-4"><input id="injections" placeholder="Number of Injections" class="form-control" type="number"></div>
+        <div class="col-md-4"><input id="dressing" placeholder="Number of Dressing" class="form-control" type="number"></div>
+        <div class="col-md-4"><input id="minorSurgeries" placeholder="Number of Minor surgeries" class="form-control" type="number"></div>
+        <div class="col-md-4"><input id="opdUmandawa" placeholder="OPD visit in Umandawa" class="form-control" type="number"></div>
+        <div class="col-md-4"><input id="bloodDrawing" placeholder="Number of blood drawing" class="form-control" type="number"></div>
+        <div class="col-md-4"><input id="catheterization" placeholder="Number of Catheterization" class="form-control" type="number"></div>
+      </div>
+      <div class="mt-3">
+        <button class="btn btn-primary" onclick="submitOPD()">Submit OPD</button>
+      </div>
+    </div>
+
+    <!-- ENDOSCOPY UNIT FORM -->
+<div id="endoscopyForm" class="form-section d-none">
+  <h4>Endoscopy Unit</h4>
+  <div class="row g-3">
+    <div class="col-md-4"><input value="Endoscopy Unit" class="form-control" disabled></div>
+    <div class="col-md-12"><input id="totalEndoscopy" placeholder="Total Number of Endoscopy" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitEndoscopy()">Submit Endoscopy</button>
+  </div>
+</div>
+
+<!-- BLOOD BANK FORM -->
+<div id="bloodBankForm" class="form-section d-none">
+  <h4>Blood Bank Summary</h4>
+  <div class="row g-3">
+    <div class="col-md-4"><input value="Bloodbank" class="form-control" disabled></div>
+    <div class="col-md-4"><input id="bloodIssue" placeholder="No. of Blood Issuing" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="componentIssuing" placeholder="No. Blood component Issuing" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="dtRequested" placeholder="No. of DT Requested" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="crossMatching" placeholder="No. of cross Matching done" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="issuedOtherHospitals" placeholder="Blood issued to other hospitals" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="componentOtherHospitals" placeholder="Component Issued to other hospitals" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="receivedOtherHospitals" placeholder="Blood received from other hospitals" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="componentReceivedOtherHospitals" placeholder="No of Component received from other hospitals" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="componentRequest" placeholder="No of Component request" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="mobileCollection" placeholder="Mobile collection" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="inHouseCollection" placeholder="In house collection" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="pltConcentrationIssued" placeholder="Plt/ concentration received to other hospitals" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="totalStock" placeholder="Total blood stock on (Pint)" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitBloodBank()">Submit Blood Bank</button>
+  </div>
+</div>
+
+<!-- HEMATOLOGY FORM -->
+<div id="hematologyForm" class="form-section d-none">
+  <h4>Hematology Unit</h4>
+  <div class="row g-3">
+    <div class="col-md-4"><input value="Haematology Unit" class="form-control" disabled></div>
+    <div class="col-md-4"><input id="admissions" placeholder="No. Of Admission" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="clinicPts" placeholder="No. Of Clinic Pt.s" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="phlebotomy" placeholder="No. Blood drawing" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="platelet" placeholder="Platelet" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="sameDayDischarges" placeholder="No of same day discharges" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="discharges" placeholder="No. Of Discharges" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="referrals" placeholder="No. Of Referrals" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="boneMarrow" placeholder="No. of Bone marrow Biopsy" class="form-control" type="number"></div>
+    <div class="col-md-4"><input id="scInjection" placeholder="SC injection (erythropoietin)" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitHematology()">Submit Hematology</button>
+  </div>
+</div>
+
+<div id="bloodDrawingCenterForm" class="form-section d-none">
+  <h4>Blood Drawing Centers Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="room38" placeholder="Room No - 38" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="room23" placeholder="Room No - 23" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="room04" placeholder="Room No - 04" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="hematology" placeholder="Hematology" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalNumbers" placeholder="Total Numbers" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitBloodDrawingCenter()">Submit Blood Drawing</button>
+  </div>
+</div>
+<div id="infectiousDiseasesForm" class="form-section d-none">
+
+  <h4>Infectious Diseases Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="dengue" placeholder="Dengue" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="leptospirosis" placeholder="Leptospirosis" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="h1n1" placeholder="H1N1" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="influenzaB" placeholder="Influenza B" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="covid19" placeholder="Covid 19" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="tetanus" placeholder="Tetanus" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="chickenpox" placeholder="Chickenpox" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalInfections" placeholder="Total Infections" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitInfectiousDiseases()">Submit Infectious Diseases</button>
+  </div>
+</div>
+<div id="painManagementForm" class="form-section d-none">
+  <h4>Pain Management Unit Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="postOpPainAssessment" placeholder="Post Operative Pain Assessment" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="epiduralMonitoring" placeholder="Monitoring of Epidural Pt.s" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="clinicFollowUp" placeholder="Clinic Follow up Pt.s" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="maternalBackMassage" placeholder="Maternal Patients - Back Massage" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="maternalHealthEducation" placeholder="Maternal Patients - Health Educations" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="nonPharmaTherapy" placeholder="Non-Pharmacological Therapy" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalPts" placeholder="Total No. of pts." class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitPainManagement()">Submit Pain Management</button>
+  </div>
+</div>
+<div id="chemoTherapyForm" class="form-section d-none">
+  <h4>Chemotherapy Day Unit Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="chemoTherapy" placeholder="No. of Chemotherapy" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="zoledronicAcid" placeholder="No. of Zoledronic Acid Treatment" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="filgrastimTreatment" placeholder="No. of Filgrastim Treatment" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="postponedPts" placeholder="No. of Postpone pts" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="total" placeholder="Total" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitChemoTherapy()">Submit Chemotherapy</button>
+  </div>
+</div>
+<div id="breastFeedingForm" class="form-section d-none">
+  <h4>Breastfeeding Day Centre Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="outOfHospitalReferralsBf" placeholder="From Out of Hospital Referrals" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="inwardReferralsBf" placeholder="From Inward Referrals" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="antenatalMothersBf" placeholder="Antenatal Mothers" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="postnatalMothersBf" placeholder="Postnatal Mothers" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="postAndAntenatalMothersBf" placeholder="Antenatal & Postnatal Mothers" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="dischargeReferralsBf" placeholder="From Discharge" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="opdReferralsBf" placeholder="From Clinic/OPD Referrals" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalBf" placeholder="Total" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitBreastFeeding()">Submit Breastfeeding</button>
+  </div>
+</div>
+<div id="maternalCensusForm" class="form-section d-none">
+  <h4>Maternal Census - Delivery Summary</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="nvds" placeholder="NVDs" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="forcepsDelivery" placeholder="Forceps Delivery" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="vacuumDelivery" placeholder="Vacuum Delivery" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="lscs" placeholder="LSCS" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalDeliveries" placeholder="TOTAL DELIVERIES" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="twinDelivery" placeholder="Twin Delivery" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="tripletDelivery" placeholder="Triplet Delivery" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="iud" placeholder="IUD" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="stillBirth" placeholder="Still Birth" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="neonatalDeath" placeholder="Neonatal Death" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="maternalDeath" placeholder="Maternal Death" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitMaternalCensus()">Submit Maternal Census</button>
+  </div>
+</div>
+<div id="dialysisForm" class="form-section d-none">
+  <h4>Dialysis Unit Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="directDialysis" placeholder="Direct" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="inWardPatient" placeholder="In Ward Patient" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalDialysis" placeholder="Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="renalBiopsy" placeholder="Renal Biopsy" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="capdInsert" placeholder="CAPD Insert" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="permanentHDCatheterInsert" placeholder="Permanent HD Catheter Insert" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="tempHdCatheterInsert" placeholder="Temporary HD Catheter Insert" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="otherDialysis" placeholder="Other" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitDialysisForm()">Submit Dialysis Unit</button>
+  </div>
+</div>
+<div id="aeMidnightForm" class="form-section d-none">
+  <h4>Midnight Summary – A&E</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="admissionsAe" placeholder="Admissions" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="hospitalAdmissions" placeholder="Hospital Admission" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalDailyIn" placeholder="Total Daily IN" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="transfersToOtherWards" placeholder="No of Transfers to Other Wards" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="transfersToOtherHospitals" placeholder="No of Transfers to Other Hospitals" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="dischargesAe" placeholder="Discharges" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="sameDayDischargesAe" placeholder="Same Day Discharges" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="missings" placeholder="Missings" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="lamas" placeholder="LAMAs" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="numberOfDeaths" placeholder="Number of Deaths" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="onAdmissionDeaths" placeholder="On Admission Deaths" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalDailyOut" placeholder="Total Daily OUT" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="previousDayMidnightTotal" placeholder="Previous Day Midnight Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="todayMidnightTotal" placeholder="Today Midnight Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="arv" placeholder="ARV" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="ars" placeholder="ARS" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitMidnightSummary()">Submit A&E Midnight Summary</button>
+  </div>
+</div>
+  <div id="theaterAbForm" class="form-section d-none">
+  <h4>Theater AB Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="majorAb" placeholder="Major" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="minorAb" placeholder="Minor" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalAb" placeholder="Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="gaAb" placeholder="GA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="laAb" placeholder="LA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="spinalAb" placeholder="Spinal" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="epiduralAb" placeholder="Epidural" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="topicalAb" placeholder="Topical" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="otherAb" placeholder="Other" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalNetAb" placeholder="Total" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitTheaterAbData()">Submit Theater AB Data</button>
+  </div>
+</div>
+  <div id="theaterCdForm" class="form-section d-none">
+  <h4>Theater CD Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="majorCd" placeholder="Major" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="minorCd" placeholder="Minor" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalCd" placeholder="Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="gaCd" placeholder="GA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="laCd" placeholder="LA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="spinalCd" placeholder="Spinal" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="epiduralCd" placeholder="Epidural" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="topicalCd" placeholder="Topical" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="otherCd" placeholder="Other" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalNetCd" placeholder="Total" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitTheaterCdData()">Submit Theater CD Data</button>
+  </div>
+</div>
+  <div id="theaterEfForm" class="form-section d-none">
+  <h4>Theater EF Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="majorEf" placeholder="Major" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="minorEf" placeholder="Minor" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalEf" placeholder="Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="gaEf" placeholder="GA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="laEf" placeholder="LA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="spinalEf" placeholder="Spinal" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="epiduralEf" placeholder="Epidural" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="topicalEf" placeholder="Topical" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="otherEf" placeholder="Other" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalNetEf" placeholder="Total" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitTheaterEfData()">Submit Theater EF Data</button>
+  </div>
+</div>
+  <div id="theaterGhForm" class="form-section d-none">
+  <h4>Theater GH Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="majorGh" placeholder="Major" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="minorGh" placeholder="Minor" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalGh" placeholder="Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="gaGh" placeholder="GA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="laGh" placeholder="LA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="spinalGh" placeholder="Spinal" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="epiduralGh" placeholder="Epidural" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="topicalGh" placeholder="Topical" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="otherGh" placeholder="Other" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalNetGh" placeholder="Total" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitTheaterGhData()">Submit Theater GH Data</button>
+  </div>
+</div>
+  <div id="theaterMForm" class="form-section d-none">
+  <h4>Theater M Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="majorM" placeholder="Major" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="minorM" placeholder="Minor" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalM" placeholder="Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="gaM" placeholder="GA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="laM" placeholder="LA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="spinalM" placeholder="Spinal" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="epiduralM" placeholder="Epidural" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="topicalM" placeholder="Topical" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="otherM" placeholder="Other" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalNetM" placeholder="Total" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitTheaterMData()">Submit Theater M Data</button>
+  </div>
+</div>
+  <div id="theaterEyeForm" class="form-section d-none">
+  <h4>Theater Eye Report</h4>
+  <div class="row g-3">
+    <div class="col-md-6"><input id="majorI" placeholder="Major" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="minorI" placeholder="Minor" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalI" placeholder="Total" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="gaI" placeholder="GA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="laI" placeholder="LA" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="spinalI" placeholder="Spinal" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="epiduralI" placeholder="Epidural" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="topicalI" placeholder="Topical" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="otherI" placeholder="Other" class="form-control" type="number"></div>
+    <div class="col-md-6"><input id="totalNetI" placeholder="Total" class="form-control" type="number"></div>
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" onclick="submitTheaterEyeData()">Submit Theater Eye Data</button>
+  </div>
+</div>
+  </body>
+</html>
